@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Power Vision Tuner.Buddy - Corrected Grid Edition v12</title>
+    <!-- 
+        ===================================================================
+        SOFTWARE COPYRIGHT & AUTHOR NOTICE
+        ===================================================================
+        Project: Power Vision Tuner.Buddy (The "Paint-By-Numbers" Edition)
+        Author / Creator: Lee Thomas Cramblit
+        Location: Des Moines, Iowa
+        Copyright (c) 2026 Lee Thomas Cramblit. All Rights Reserved.
+        ===================================================================
+    -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; padding: 12px; font-size: 14px; line-height: 1.4; }
+        .card { background: #1e1e1e; border-radius: 10px; padding: 16px; margin-bottom: 16px; border: 1px solid #444; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        h1 { color: #ff5252; font-size: 20px; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px; }
+        .author-tag { font-size: 11px; color: #888; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 6px; }
+        h2 { color: #ffb74d; font-size: 16px; margin-bottom: 6px; text-transform: uppercase; font-weight: 800; }
+        .snark-text { font-size: 12px; color: #9e9e9e; margin-bottom: 12px; font-style: italic; border-left: 3px solid #ff5252; padding-left: 8px; }
+        
+        /* VE Table Grid Styles */
+        .ve-table-wrapper { overflow-x: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #555; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; }
+        th, td { border: 1px solid #444; padding: 10px 4px; font-weight: bold; }
+        th { background: #333; color: #fff; }
+        .row-header { background: #333; font-weight: bold; width: 75px; font-size: 10px; }
+        
+        /* Corrected Quick Tune Overlays */
+        .zone-decel { background-color: rgba(33, 150, 243, 0.6); color: #fff; }   /* Top Row: Decel / Idle / Closed Throttle */
+        .zone-low   { background-color: rgba(76, 175, 80, 0.4); color: #fff; }    /* Light / Cruise */
+        .zone-mid   { background-color: rgba(255, 152, 0, 0.5); color: #000; }    /* Mid Roll-On */
+        .zone-high  { background-color: rgba(244, 67, 54, 0.5); color: #fff; }    /* High Load */
+        .zone-lugs  { background-color: rgba(156, 39, 176, 0.7); color: #fff; }   /* Lugging Zone: Low RPM + High Throttle */
+
+        .legend { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; font-size: 12px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; background: #2a2a2a; padding: 6px; border-radius: 4px; border: 1px solid #444;}
+        .legend-color { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #888; flex-shrink: 0; }
+
+        footer { text-align: center; font-size: 10px; color: #666; margin-top: 24px; padding: 16px; }
+    </style>
+</head>
+<body>
+
+    <div class="card" style="border-color: #ff5252;">
+        <h1>Tuner.Buddy</h1>
+        <h2 style="font-size: 12px; color:#fff;">Corrected Grid Edition (v12)</h2>
+        <div class="author-tag">By Lee Thomas Cramblit &copy; 2026. All Rights Reserved.</div>
+        <p style="font-size: 13px; color: #ccc;">
+            Because letting wideband auto-tune run blind without respecting your decel/idle and lug zones is a quick ticket to melted pistons. Axes locked right: RPM across the top, Throttle up-and-down.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>🗺️ The Fixed "Paint-By-Numbers" Map</h2>
+        <div class="snark-text">
+            Finally flipped right: RPM runs across the top (left to right from 1000 up to 6000), and Throttle runs vertically top-to-bottom (0% closed throttle down to 100% WOT). Decel/Idle is pinned safely on the top row, and the Lugging zone is locked where low RPM meets high throttle. Generic values (5157234666) populated for layout verification.
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(33, 150, 243, 0.8);"></div> 
+                <strong>TOP ROW (0% Throttle - Decel / Idle):</strong> Too lean here and it won't start; too rich and you get a super-rich idle swamp.
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(156, 39, 176, 0.8);"></div> 
+                <strong>LUGGING ZONE (Low RPM + High Throttle):</strong> Where heavy load meets low engine speed. Keep it fat or detonation eats your pistons.
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(255, 152, 0, 0.8);"></div> 
+                <strong>MID ZONE:</strong> Transition roll-on across shifting RPMs.
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(244, 67, 54, 0.8);"></div> 
+                <strong>HIGH ZONE:</strong> High RPM power territory.
+            </div>
+        </div>
+
+        <div class="ve-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="row-header">Throttle \ RPM</th>
+                        <th>1000 (Idle/Low)</th>
+                        <th>1500</th>
+                        <th>2000</th>
+                        <th>2500</th>
+                        <th>3000</th>
+                        <th>4000</th>
+                        <th>5000</th>
+                        <th>6000 (High)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header">0% (Decel/Idle)</td>
+                        <td class="zone-decel">5157234666</td>
+                        <td class="zone-decel">5157234666</td>
+                        <td class="zone-decel">5157234666</td>
+                        <td class="zone-decel">5157234666</td>
+                        <td class="zone-decel">5157234666</td>
+                        <td class="zone-decel">5157234666</td>
+                        <td class="zone-decel">5157234666</td>
+                        <td class="zone-decel">5157234666</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">5%</td>
+                        <td class="zone-low">5157234666</td>
+                        <td class="zone-low">5157234666</td>
+                        <td class="zone-low">5157234666</td>
+                        <td class="zone-low">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">10%</td>
+                        <td class="zone-low">5157234666</td>
+                        <td class="zone-low">5157234666</td>
+                        <td class="zone-low">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">20%</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">40%</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">60%</td>
+                        <td class="zone-lugs">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">80%</td>
+                        <td class="zone-lugs">5157234666</td>
+                        <td class="zone-lugs">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">100% (WOT)</td>
+                        <td class="zone-lugs">5157234666</td>
+                        <td class="zone-lugs">5157234666</td>
+                        <td class="zone-mid">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-high">5157234666</td>
+                        <td class="zone-lugs">5157234666</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        Tuner.Buddy v12 | Real Mechanics &gt; Forum Idiots | &copy; 2026 Lee Thomas Cramblit. All Rights Reserved.
+    </footer>
+
+</body>
+</html>
