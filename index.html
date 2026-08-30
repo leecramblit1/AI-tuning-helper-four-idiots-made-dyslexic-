@@ -1,105 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#121212">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Power Vision Tuner.Buddy - Corrected Grid & Spark Edition v14</title>
+    <!-- 
+        ===================================================================
+        SOFTWARE COPYRIGHT & AUTHOR NOTICE
+        ===================================================================
+        Project: Power Vision Tuner.Buddy (The "Paint-By-Numbers" Edition)
+        Author / Creator: Lee Thomas Cramblit
+        Location: Des Moines, Iowa
+        Copyright (c) 2026 Lee Thomas Cramblit. All Rights Reserved.
+        ===================================================================
+    -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; padding: 12px; font-size: 14px; line-height: 1.4; }
+        .card { background: #1e1e1e; border-radius: 10px; padding: 16px; margin-bottom: 16px; border: 1px solid #444; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        h1 { color: #ff5252; font-size: 20px; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px; }
+        .author-tag { font-size: 11px; color: #888; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 6px; }
+        h2 { color: #ffb74d; font-size: 16px; margin-bottom: 6px; text-transform: uppercase; font-weight: 800; }
+        .snark-text { font-size: 12px; color: #9e9e9e; margin-bottom: 12px; font-style: italic; border-left: 3px solid #ff5252; padding-left: 8px; }
+        
+        /* Table Grid Styles */
+        .table-wrapper { overflow-x: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #555; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; }
+        th, td { border: 1px solid #444; padding: 10px 4px; font-weight: bold; }
+        th { background: #333; color: #fff; }
+        .row-header { background: #333; font-weight: bold; width: 75px; font-size: 10px; }
+        
+        td[contenteditable="true"]:focus { outline: 2px solid #ff5252; background-color: rgba(255, 255, 255, 0.15); }
+        
+        /* VE Zones */
+        .zone-decel { background-color: rgba(33, 150, 243, 0.6); color: #fff; } 
+        .zone-low   { background-color: rgba(76, 175, 80, 0.4); color: #fff; }  
+        .zone-mid   { background-color: rgba(255, 152, 0, 0.5); color: #000; }  
+        .zone-high  { background-color: rgba(244, 67, 54, 0.5); color: #fff; }  
+        .zone-lugs  { background-color: rgba(156, 39, 176, 0.7); color: #fff; } 
 
-<title>TUNER.BUDDY</title>
+        /* Spark Zones */
+        .spark-idle { background-color: rgba(0, 188, 212, 0.5); color: #fff; }
+        .spark-cru { background-color: rgba(76, 175, 80, 0.5); color: #fff; }
+        .spark-wot { background-color: rgba(255, 87, 34, 0.6); color: #fff; }
 
-<style>
-:root{
-  --bg:#101114;
-  --panel:#1a1c21;
-  --panel2:#22252b;
-  --border:#353941;
-  --text:#f2f2f2;
-  --muted:#9ca3af;
-  --red:#ff5b5b;
-  --orange:#ffad4d;
-  --blue:#4aa8ff;
-  --green:#45c979;
-  --purple:#a95cff;
-}
+        .legend { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; font-size: 12px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; background: #2a2a2a; padding: 6px; border-radius: 4px; border: 1px solid #444;}
+        .legend-color { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #888; flex-shrink: 0; }
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+        /* Buttons and Controls */
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .btn { flex: 1; min-width: 130px; padding: 10px; background: #ff5252; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; text-transform: uppercase; }
+        .btn:active { background: #d32f2f; }
+        .btn-blue { background: #2196F3; }
+        .btn-green { background: #4CAF50; }
+        .btn-purple { background: #9c27b0; }
 
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  padding-bottom:90px;
-}
+        footer { text-align: center; font-size: 10px; color: #666; margin-top: 24px; padding: 16px; }
+    </style>
+</head>
+<body>
 
-/* HEADER */
+    <!-- Header Card -->
+    <div class="card" style="border-color: #ff5252;">
+        <h1>Tuner.Buddy</h1>
+        <h2 style="font-size: 12px; color:#fff;">Corrected Grid & Spark Edition (v14)</h2>
+        <div class="author-tag">By Lee Thomas Cramblit &copy; 2026. All Rights Reserved.</div>
+        <p style="font-size: 13px; color: #ccc;">
+            Because letting wideband auto-tune run blind without respecting your decel/idle and lug zones is a quick ticket to melted pistons and diesel popcorn multipliers—and guessing spark advance is how you punch a hole straight through your cylinder head.
+        </p>
+    </div>
 
-header{
-  padding:20px 18px 14px;
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:#101114;
-  border-bottom:1px solid var(--border);
-}
+    <!-- VE TABLE SECTION -->
+    <div class="card">
+        <h2>🗺️ Volumetric Efficiency (VE) Map</h2>
+        <div class="snark-text">
+            RPM across the top (1000 to 6000), Throttle down the side (0% decel to 100% WOT). Tap any cell to tweak values, or use the math tools below to scale, interpolate rows, or fill top-to-bottom.
+        </div>
 
-.logo{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(33, 150, 243, 0.8);"></div> 
+                <strong>TOP ROW (0% Throttle - Decel / Idle):</strong> Keep it clean so it starts right without bogging down.
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(156, 39, 176, 0.8);"></div> 
+                <strong>LUGGING ZONE:</strong> Low RPM + Heavy Throttle. Keep it fat or detonation eats your pistons for breakfast.
+            </div>
+        </div>
 
-.logo h1{
-  margin:0;
-  font-size:26px;
-  letter-spacing:2px;
-  color:var(--red);
-}
+        <div class="ve-table-wrapper table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="row-header">VE Thr \ RPM</th>
+                        <th>1000</th><th>1500</th><th>2000</th><th>2500</th><th>3000</th><th>4000</th><th>5000</th><th>6000</th>
+                    </tr>
+                </thead>
+                <tbody id="veTableBody">
+                    <!-- Populated via script -->
+                </tbody>
+            </table>
+        </div>
 
-.status{
-  font-size:12px;
-  color:var(--green);
-  font-weight:bold;
-}
+        <div class="btn-group">
+            <button class="btn btn-blue" onclick="scaleTable('ve')">Scale VE %</button>
+            <button class="btn btn-green" onclick="interpolateRow('ve')">Interpolate VE Row</button>
+            <button class="btn btn-purple" onclick="fillTopToBottom('ve')">Fill VE Top-Down</button>
+        </div>
+    </div>
 
-/* MAIN */
+    <!-- SPARK ADVANCE TABLE SECTION -->
+    <div class="card" style="border-color: #ffb74d;">
+        <h2 style="color: #ffb74d;">⚡ Spark Advance Table (Degrees BTDC)</h2>
+        <div class="snark-text">
+            Keep your timing dialed. Don't let internet forum gurus talk you into cranking advance too high down in the low RPM lug zones unless you want that lovely marbles-in-a-tin-can sound.
+        </div>
 
-main{
-  padding:16px;
-  max-width:900px;
-  margin:auto;
-}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="row-header">Spark Thr \ RPM</th>
+                        <th>1000</th><th>1500</th><th>2000</th><th>2500</th><th>3000</th><th>4000</th><th>5000</th><th>6000</th>
+                    </tr>
+                </thead>
+                <tbody id="sparkTableBody">
+                    <!-- Populated via script -->
+                </tbody>
+            </table>
+        </div>
 
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:16px;
-}
+        <div class="btn-group">
+            <button class="btn btn-blue" onclick="scaleTable('spark')">Scale Spark ±</button>
+            <button class="btn btn-green" onclick="interpolateRow('spark')">Interpolate Spark Row</button>
+            <button class="btn btn-purple" onclick="fillTopToBottom('spark')">Fill Spark Top-Down</button>
+        </div>
+    </div>
 
-.card h2{
-  margin:0 0 8px;
-  font-size:20px;
-}
+    <!-- GLOBAL ACTIONS -->
+    <div class="card" style="background: #252525;">
+        <button class="btn" style="width: 100%; font-size: 15px; padding: 14px;" onclick="saveAllTunes()">💾 Save All Changes to Device</button>
+        <button class="btn btn-blue" style="width: 100%; font-size: 15px; padding: 14px; margin-top: 8px;" onclick="exportToCSV()">📥 Export Tunes to CSV</button>
+    </div>
 
-.card p{
-  color:var(--muted);
-  margin:6px 0;
-  line-height:1.5;
-}
+    <footer>
+        Tuner.Buddy v14 | Real Mechanics &gt; Forum Idiots | &copy; 2026 Lee Thomas Cramblit. All Rights Reserved.
+    </footer>
 
-.tune-info{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  margin-top:14px;
-}
+    <script>
+        // Grid zones for VE
+        const veZones = [
+            ['decel', 'decel', 'decel', 'decel', 'decel', 'decel', 'decel', 'decel'],
+            ['low', 'low', 'low', 'low', 'mid', 'mid', 'mid', 'high'],
+            ['low', 'low', 'low', 'mid', 'mid', 'mid', 'mid', 'high'],
+            ['mid', 'mid', 'mid', 'mid', 'mid', 'high', 'high', 'high'],
+            ['mid', 'mid', 'mid', 'mid', 'high', 'high', 'high', 'high'],
+            ['lugs', 'mid', 'mid', 'high', 'high', 'high', 'high', 'high'],
+            ['lugs', 'lugs', 'mid', 'high', 'high', 'high', 'high', 'high'],
+            ['lugs', 'lugs', 'mid', 'high', 'high', 'high', 'high', 'lugs']
+        ];
 
-.info-box{
-  flex:1;
+        // Grid zones for Spark Advance
+        const sparkZones = [
+            ['idle', 'idle', 'idle', 'cru', 'cru', 'cru', 'cru', 'cru'],
+            ['idle', 'cru', 'cru', 'cru', 'cru', 'cru', 'cru', 'cru'],
+            ['cru', 'cru', 'cru', 'cru', 'cru', 'cru', 'cru', 'wot'],
+            ['cru', 'cru', 'cru', 'cru', 'cru', 'wot', 'wot', 'wot'],
+            ['cru', 'cru', 'cru', 'wot', 'wot', 'wot', 'wot', 'wot'],
+            ['wot', 'cru', 'cru', 'wot', 'wot', 'wot', 'wot', 'wot'],
+            ['wot', 'wot', 'cru', 'wot', 'wot', 'wot', 'wot', 'wot'],
+            ['wot', 'wot', 'wot', 'wot', 'wot', 'wot', 'wot', 'wot']
+        ];
+        
+        const throttleLabels = ['0%', '5%', '10%', '20%', '40%', '60%', '80%', '100%'];
+        
+        const veTbody = document.getElementById('veTableBody');
+        const sparkTbody = document.getElementById('sparkTableBody');
+
+        // Load saved data from localStorage or defaults
+        let savedVE = JSON.parse(localStorage.getItem('tunerBuddyVE')) || Array(8).fill(Array(8).fill(90));
+        let savedSpark = JSON.parse(localStorage.getItem('tunerBuddySpark')) || [
+            [12, 14, 18, 24, 28, 30, 32, 32],
+            [14, 18, 22, 28, 32, 34, 35, 35],
+            [16, 22, 26, 32, 34, 35, 35, 32],
+            [16, 24, 28, 33, 34, 34, 32, 30],
+            [15, 22, 26, 30, 32, 31, 30, 28],
+            [12, 18, 24, 28, 29, 28, 27, 26],
+            [10, 16, 21, 25, 26, 25, 24, 24],
+            [8,  14, 18, 22, 23, 22, 21, 20]
+        ];
+
+        // Build Tables Function
+        function buildTable(tbody, zones, data) {
+            tbody.innerHTML = "";
+            zones.forEach((row, rIdx) => {
+                let tr = document.createElement('tr');
+                let th = document.createElement('td');
+                th.className = 'row-header';
+                th.innerText = throttleLabels[rIdx];
+                tr.appendChild(th);
+
+                row.forEach((zone, cIdx) => {
+                    let td = document.createElement('td');
+                    td.className = `zone-${zone} spark-${zone}`;
+                    td.contentEditable = true;
+                    td.inputMode = "numeric";
+                    td.innerText = data[rIdx] ? data[rIdx][cIdx] : 0;
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        buildTable(veTbody, veZones, savedVE);
+        buildTable(sparkTbody, sparkZones, savedSpark);
+
+        // Save Function
+        function saveAllTunes() {
+            let newVE = [], newSpark = [];
+            
+            veTbody.querySelectorAll('tr').forEach(row => {
+                let rData = [];
+                row.querySelectorAll('td[contenteditable="true"]').forEach(cell => rData.push(parseFloat(cell.innerText) || 0));
+                newVE.push(rData);
+            });
+
+            sparkTbody.querySelectorAll('tr').forEach(row => {
+                let rData = [];
+                row.querySelectorAll('td[contenteditable="true"]').forEach(cell => rData.push(parseFloat(cell.innerText) || 0));
+                newSpark.push(rData);
+            });
+
+            localStorage.setItem('tunerBuddyVE', JSON.stringify(newVE));
+            localStorage.setItem('tunerBuddySpark', JSON.stringify(newSpark));
+            alert('All tune data safely saved to device storage!');
+        }
+
+        // Scale Table Tool (+/- percentage)
+        function scaleTable(type) {
+            let tbody = type === 've' ? veTbody : sparkTbody;
+            let input = prompt(`Enter scale percentage for ${type.toUpperCase()} (e.g., 5 for +5%, -3 for -3%):`, "0");
+            if (input === null) return;
+            let percent = parseFloat(input);
+            if (isNaN(percent)) { alert("Invalid number!"); return; }
+            let multiplier = 1 + (percent / 100);
+
+            tbody.querySelectorAll('tr').forEach(row => {
+                row.querySelectorAll('td[contenteditable="true"]').forEach(cell => {
+                    let val = parseFloat(cell.innerText);
+                    if (!isNaN(val)) {
+                        cell.innerText = Math.round((val * multiplier) * 10) / 10;
+                    }
+                });
+            });
+            saveAllTunes();
+            alert(`${type.toUpperCase()} table scaled by ${percent}%!`);
+        }
+
+        // Interpolate Row Tool
+        function interpolateRow(type) {
+            let tbody = type === 've' ? veTbody : sparkTbody;
+            let rowIdxInput = prompt("Enter row number to interpolate (0 for 0% throttle, up to 7 for 100%):", "0");
+            if (rowIdxInput === null) return;
+            let rIdx = parseInt(rowIdxInput);
+            if (isNaN(rIdx) || rIdx < 0 || rIdx > 7) { alert("Invalid row index (0-7 only)!"); return; }
+
+            let startVal = prompt("Enter start value (left side / 1000 RPM):");
+            if (startVal === null) return;
+            let endVal = prompt("Enter end value (right side / 6000 RPM):");
+            if (endVal === null) return;
+
+            let start = parseFloat(startVal), end = parseFloat(endVal);
+            if (isNaN(start) || isNaN(end)) { alert("Invalid numbers!"); return; }
+
+            let targetCells = tbody.querySelectorAll('tr')[rIdx].querySelectorAll('td[contenteditable="true"]');
+            let steps = targetCells.length;
+
+            for (let i = 0; i < steps; i++) {
+                let interpolated = start + (end - start) * (i / (steps - 1));
+                targetCells[i].innerText = Math.round(interpolated * 10) / 10;
+            }
+            saveAllTunes();
+            alert(`Row ${rIdx} interpolated successfully!`);
+        }
+
+        // Vertical Top-to-Bottom Fill Tool
+        function fillTopToBottom(type) {
+            let tbody = type === 've' ? veTbody : sparkTbody;
+            let rows = tbody.querySelectorAll('tr');
+            let numRows = rows.length;
+            if (numRows < 2) return;
+
+            let topCells = rows[0].querySelectorAll('td[contenteditable="true"]');
+            let bottomCells = rows[numRows - 1].querySelectorAll('td[contenteditable="true"]');
+            let cols = topCells.length;
+
+            for (let c = 0; c < cols; c++) {
+                let topVal = parseFloat(topCells[c].innerText);
+                let bottomVal = parseFloat(bottomCells[c].innerText);
+                if (isNaN(topVal) || isNaN(bottomVal)) continue;
+
+                for (let r = 1; r < numRows - 1; r++) {
+                    let factor = r / (numRows - 1);
+                    let interpolated = topVal + (bottomVal - topVal) * factor;
+                    let targetCell = rows[r].querySelectorAll('td[contenteditable="true"]')[c];
+                    if (targetCell) {
+                        targetCell.innerText = Math.round(interpolated * 10) / 10;
+                    }
+                }
+            }
+            saveAllTunes();
+            alert(`${type.toUpperCase()} grid filled smoothly from top to bottom!`);
+        }
+
+        // CSV Export Tool
+        function exportToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "=== VOLUMETRIC EFFICIENCY (VE) TABLE ===\r\n";
+            csvContent += "Throttle/RPM,1000,1500,2000,2500,3000,4000,5000,6000\r\n";
+            
+            veTbody.querySelectorAll('tr').forEach(row => {
+                let rowData = [row.querySelector('.row-header').innerText.replace('%', '')];
+                row.querySelectorAll('td[contenteditable="true"]').forEach(cell => rowData.push(cell.innerText.trim()));
+                csvContent += rowData.join(",") + "\r\n";
+            });
+
+            csvContent += "\r\n=== SPARK ADVANCE TABLE ===\r\n";
+            csvContent += "Throttle/RPM,1000,1500,2000,2500,3000,4000,5000,6000\r\n";
+            
+            sparkTbody.querySelectorAll('tr').forEach(row => {
+                let rowData = [row.querySelector('.row-header').innerText.replace('%', '')];
+                row.querySelectorAll('td[contenteditable="true"]').forEach(cell => rowData.push(cell.innerText.trim()));
+                csvContent += rowData.join(",") + "\r\n";
+            });
+
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "tuner_buddy_full_tune.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
   background:var(--panel2);
   border-radius:12px;
   padding:12px;
