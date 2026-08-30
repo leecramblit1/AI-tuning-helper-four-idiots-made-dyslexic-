@@ -1,345 +1,1433 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#121212">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>Power Vision Tuner.Buddy - Corrected Grid Edition v12</title>
-    <style>* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TUNER.BUDDY</title>
+
+<style>
+:root{
+  --bg:#101114;
+  --panel:#1a1c21;
+  --panel2:#22252b;
+  --border:#353941;
+  --text:#f2f2f2;
+  --muted:#9ca3af;
+  --red:#ff5b5b;
+  --orange:#ffad4d;
+  --blue:#4aa8ff;
+  --green:#45c979;
+  --purple:#a95cff;
 }
 
-body {
-    background-color: #121212;
-    color: #e0e0e0;
-    padding: 12px;
-    font-size: 14px;
-    line-height: 1.4;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
-.card {
-    background: #1e1e1e;
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 16px;
-    border: 1px solid #444;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  padding-bottom:90px;
 }
 
-h1 {
-    color: #ff5252;
-    font-size: 20px;
-    text-transform: uppercase;
-    font-weight: 900;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
+/* HEADER */
+
+header{
+  padding:20px 18px 14px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#101114;
+  border-bottom:1px solid var(--border);
 }
 
-.author-tag {
-    font-size: 11px;
-    color: #888;
-    margin-bottom: 12px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 6px;
+.logo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
-h2 {
-    color: #ffb74d;
-    font-size: 16px;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    font-weight: 800;
+.logo h1{
+  margin:0;
+  font-size:26px;
+  letter-spacing:2px;
+  color:var(--red);
 }
 
-.snark-text {
-    font-size: 12px;
-    color: #9e9e9e;
-    margin-bottom: 12px;
-    font-style: italic;
-    border-left: 3px solid #ff5252;
-    padding-left: 8px;
+.status{
+  font-size:12px;
+  color:var(--green);
+  font-weight:bold;
 }
 
-/* ===============================
-   VE TABLE
-   =============================== */
+/* MAIN */
 
-.ve-table-wrapper {
-    overflow-x: auto;
-    margin-top: 10px;
-    border-radius: 6px;
-    border: 1px solid #555;
-    -webkit-overflow-scrolling: touch;
+main{
+  padding:16px;
+  max-width:900px;
+  margin:auto;
 }
 
-table {
-    width: 100%;
-    min-width: 750px;
-    border-collapse: collapse;
-    font-size: 11px;
-    text-align: center;
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:16px;
 }
 
-th,
-td {
-    border: 1px solid #444;
-    padding: 10px 4px;
-    font-weight: bold;
+.card h2{
+  margin:0 0 8px;
+  font-size:20px;
 }
 
-th {
-    background: #333;
-    color: #fff;
+.card p{
+  color:var(--muted);
+  margin:6px 0;
+  line-height:1.5;
 }
 
-td {
-    transition: all 0.15s ease;
+.tune-info{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:14px;
 }
 
-td:hover {
-    filter: brightness(1.2);
+.info-box{
+  flex:1;
+  background:var(--panel2);
+  border-radius:12px;
+  padding:12px;
+  text-align:center;
 }
 
-.row-header {
-    background: #333;
-    font-weight: bold;
-    width: 90px;
-    font-size: 10px;
-    color: #fff;
+.info-box small{
+  display:block;
+  color:var(--muted);
 }
 
-/* ===============================
-   TUNING ZONES
-   =============================== */
-
-/* Decel / Idle */
-.zone-decel {
-    background-color: rgba(33, 150, 243, 0.65);
-    color: #fff;
+.info-box strong{
+  display:block;
+  margin-top:5px;
+  font-size:15px;
 }
 
-/* Light Cruise */
-.zone-low {
-    background-color: rgba(76, 175, 80, 0.50);
-    color: #fff;
+/* TABLE */
+
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--border);
+  border-radius:12px;
+  max-height:520px;
 }
 
-/* Mid Roll-On */
-.zone-mid {
-    background-color: rgba(255, 152, 0, 0.65);
-    color: #111;
+table{
+  border-collapse:collapse;
+  min-width:700px;
+  width:100%;
 }
 
-/* High Load / Power */
-.zone-high {
-    background-color: rgba(244, 67, 54, 0.65);
-    color: #fff;
+th{
+  background:#2a2d33;
+  position:sticky;
+  top:0;
+  z-index:5;
 }
 
-/* Lugging */
-.zone-lugs {
-    background-color: rgba(156, 39, 176, 0.75);
-    color: #fff;
+th,td{
+  border:1px solid #393d45;
+  text-align:center;
+  min-width:82px;
+  height:58px;
 }
 
-/* ===============================
-   LEGEND
-   =============================== */
-
-.legend {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 12px;
+th{
+  color:#ddd;
+  font-size:14px;
 }
 
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #2a2a2a;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #444;
+.row-label{
+  background:#292c31;
+  font-weight:bold;
+  position:sticky;
+  left:0;
+  z-index:4;
 }
 
-.legend-color {
-    width: 18px;
-    height: 18px;
-    border-radius: 4px;
-    border: 1px solid #888;
-    flex-shrink: 0;
+.corner{
+  z-index:8;
 }
 
-/* ===============================
-   FOOTER
-   =============================== */
-
-footer {
-    text-align: center;
-    font-size: 10px;
-    color: #666;
-    margin-top: 24px;
-    padding: 16px;
+.cell{
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  user-select:none;
 }
 
-/* ===============================
-   MOBILE
-   =============================== */
-
-@media (max-width: 600px) {
-
-    body {
-        padding: 8px;
-    }
-
-    .card {
-        padding: 12px;
-        border-radius: 8px;
-    }
-
-    h1 {
-        font-size: 22px;
-    }
-
-    h2 {
-        font-size: 14px;
-    }
-
-    .legend-item {
-        align-items: flex-start;
-    }
-
-    th,
-    td {
-        padding: 12px 6px;
-        font-size: 12px;
-    }
+.cell:active{
+  filter:brightness(1.5);
 }
 
-/* ===============================
-   SCROLLBAR
-   =============================== */
+.blue{background:#245f91;}
+.green{background:#265d38;}
+.orange{background:#9a5b00;}
+.purple{background:#65246f;}
 
-::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
+/* BUTTONS */
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
 }
 
-::-webkit-scrollbar-track {
-    background: #1a1a1a;
+button{
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  font-size:15px;
+  font-weight:bold;
+  color:white;
+  cursor:pointer;
+  flex:1;
 }
 
-::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 10px;
+.save{
+  background:var(--green);
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #777;
+.reset{
+  background:#363a42;
 }
-    </style>
+
+button:active{
+  transform:scale(.98);
+}
+
+/* LOGS */
+
+.log-item{
+  background:var(--panel2);
+  border-left:4px solid var(--blue);
+  padding:12px;
+  border-radius:8px;
+  margin-top:10px;
+}
+
+.log-item strong{
+  display:block;
+}
+
+.log-item span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* SETTINGS */
+
+.setting{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.setting:last-child{
+  border:none;
+}
+
+.setting span{
+  color:var(--muted);
+}
+
+/* BOTTOM NAV */
+
+nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:74px;
+  background:#181a1f;
+  border-top:1px solid var(--border);
+  display:flex;
+  z-index:50;
+}
+
+.nav-btn{
+  flex:1;
+  background:none;
+  border-radius:0;
+  color:#858b95;
+  padding:8px;
+  font-size:12px;
+}
+
+.nav-btn .icon{
+  display:block;
+  font-size:24px;
+  margin-bottom:4px;
+}
+
+.nav-btn.active{
+  color:var(--red);
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+  .logo h1{
+    font-size:23px;
+  }
+
+  main{
+    padding:12px;
+  }
+
+  .card{
+    padding:14px;
+  }
+
+  .tune-info{
+    gap:6px;
+  }
+
+  .info-box{
+    padding:9px 5px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-    <div class="card" style="border-color: #ff5252;">
-        <h1>Tuner.Buddy</h1>
-        <h2 style="font-size: 12px; color:#fff;">Corrected Grid Edition (v12)</h2>
-        <div class="author-tag">By Lee Thomas Cramblit &copy; 2026. All Rights Reserved.</div>
-        <p style="font-size: 13px; color: #ccc;">
-            Because letting wideband auto-tune run blind without respecting your decel/idle and lug zones is a quick ticket to melted pistons.
-        </p>
+<header>
+  <div class="logo">
+    <h1>TUNER.BUDDY</h1>
+    <div class="status">● ONLINE</div>
+  </div>
+</header>
+
+<main>
+
+<!-- TUNE PAGE -->
+
+<section id="tune" class="page active">
+
+  <div class="card">
+    <h2>🔥 Active Tune</h2>
+    <p>Your mobile tuning workspace.</p>
+
+    <div class="tune-info">
+
+      <div class="info-box">
+        <small>TABLE</small>
+        <strong>VE MAP</strong>
+      </div>
+
+      <div class="info-box">
+        <small>CELLS</small>
+        <strong id="cellCount">72</strong>
+      </div>
+
+      <div class="info-box">
+        <small>STATUS</small>
+        <strong>SAVED</strong>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+
+    <h2>🗺️ VE MAP</h2>
+
+    <p>Tap any cell to change its value.</p>
+
+    <div class="table-wrap">
+
+      <table id="veTable">
+
+        <thead>
+          <tr>
+            <th class="corner">THR ↓ / RPM →</th>
+            <th>1000</th>
+            <th>1500</th>
+            <th>2000</th>
+            <th>2500</th>
+            <th>3000</th>
+            <th>4000</th>
+            <th>5000</th>
+            <th>6000</th>
+          </tr>
+        </thead>
+
+        <tbody id="tableBody"></tbody>
+
+      </table>
+
     </div>
 
-    <div class="card">
-        <h2>🗺️ The Fixed "Paint-By-Numbers" Map</h2>
-        <div class="snark-text">
-            Tap any cell to edit your VE values. Your changes will save locally.
-        </div>
-        
-        <!-- Legend Omitted for Brevity - keep yours here -->
+    <div class="actions">
 
-        <div class="ve-table-wrapper">
-            <table id="veTable">
-                <thead>
-                    <tr>
-                        <th class="row-header">Thr \ RPM</th>
-                        <th>1000</th><th>1500</th><th>2000</th><th>2500</th><th>3000</th><th>4000</th><th>5000</th><th>6000</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- JavaScript will generate the rows here to keep code clean -->
-                </tbody>
-            </table>
-        </div>
-        <button class="btn" onclick="saveData()">Save Tune to Device</button>
+      <button class="save" onclick="saveTune()">
+        💾 SAVE TUNE
+      </button>
+
+      <button class="reset" onclick="resetTune()">
+        ↺ RESET
+      </button>
+
     </div>
 
-    <footer>
-        Tuner.Buddy v12 | Real Mechanics &gt; Forum Idiots | &copy; 2026 Lee Thomas Cramblit.
-    </footer>
+  </div>
 
-    <script>
-        // Grid setup defining the zones for each cell
-        const gridZones = [
-            ['decel', 'decel', 'decel', 'decel', 'decel', 'decel', 'decel', 'decel'], // 0%
-            ['low', 'low', 'low', 'low', 'mid', 'mid', 'mid', 'high'],                // 5%
-            ['low', 'low', 'low', 'mid', 'mid', 'mid', 'mid', 'high'],                // 10%
-            ['mid', 'mid', 'mid', 'mid', 'mid', 'high', 'high', 'high'],              // 20%
-            ['mid', 'mid', 'mid', 'mid', 'high', 'high', 'high', 'high'],             // 40%
-            ['lugs', 'mid', 'mid', 'high', 'high', 'high', 'high', 'high'],           // 60%
-            ['lugs', 'lugs', 'mid', 'high', 'high', 'high', 'high', 'high'],          // 80%
-            ['lugs', 'lugs', 'mid', 'high', 'high', 'high', 'high', 'lugs']           // 100%
-        ];
-        
-        const throttleLabels = ['0%', '5%', '10%', '20%', '40%', '60%', '80%', '100%'];
-        const tbody = document.getElementById('tableBody');
+</section>
 
-        // Load saved data or use defaults
-        let savedData = JSON.parse(localStorage.getItem('tunerBuddyData')) || Array(8).fill(Array(8).fill(90));
 
-        // Generate the table dynamically
-        gridZones.forEach((row, rowIndex) => {
-            let tr = document.createElement('tr');
-            
-            // Add row header
-            let th = document.createElement('td');
-            th.className = 'row-header';
-            th.innerText = throttleLabels[rowIndex];
-            tr.appendChild(th);
+<!-- LOGS PAGE -->
 
-            // Add editable cells
-            row.forEach((zone, colIndex) => {
-                let td = document.createElement('td');
-                td.className = `zone-${zone}`;
-                td.contentEditable = true;
-                td.inputMode = "numeric"; // Pops up number pad on mobile
-                td.innerText = savedData[rowIndex] ? savedData[rowIndex][colIndex] : 90;
-                tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
+<section id="logs" class="page">
 
-        // Save function
-        function saveData() {
-            let newData = [];
-            const rows = tbody.querySelectorAll('tr');
-            rows.forEach(row => {
-                let rowData = [];
-                const cells = row.querySelectorAll('td[contenteditable="true"]');
-                cells.forEach(cell => rowData.push(parseInt(cell.innerText) || 0));
-                newData.push(rowData);
-            });
-            localStorage.setItem('tunerBuddyData', JSON.stringify(newData));
-            alert('Tune data saved to your device!');
-        }
-    </script>
+  <div class="card">
+
+    <h2>📊 DATALOGS</h2>
+
+    <p>Logs will eventually show your RPM, AFR, boost and other engine data here.</p>
+
+    <div class="log-item">
+      <strong>No logs loaded</strong>
+      <span>Connect logging support in a future update.</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SPARK PAGE -->
+
+<section id="spark" class="page">
+
+  <div class="card">
+
+    <h2>⚡ SPARK TUNING</h2>
+
+    <p>This section will hold ignition timing maps.</p>
+
+    <div class="log-item">
+      <strong>Spark Table</strong>
+      <span>Coming next.</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SETTINGS PAGE -->
+
+<section id="settings" class="page">
+
+  <div class="card">
+
+    <h2>⚙️ SETTINGS</h2>
+
+    <div class="setting">
+      <strong>Theme</strong>
+      <span>Dark</span>
+    </div>
+
+    <div class="setting">
+      <strong>Local Storage</strong>
+      <span>Enabled</span>
+    </div>
+
+    <div class="setting">
+      <strong>Version</strong>
+      <span>V2.0</span>
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- BOTTOM NAV -->
+
+<nav>
+
+  <button class="nav-btn active" onclick="showPage('tune',this)">
+    <span class="icon">🗺️</span>
+    TUNE
+  </button>
+
+  <button class="nav-btn" onclick="showPage('logs',this)">
+    <span class="icon">📊</span>
+    LOGS
+  </button>
+
+  <button class="nav-btn" onclick="showPage('spark',this)">
+    <span class="icon">⚡</span>
+    SPARK
+  </button>
+
+  <button class="nav-btn" onclick="showPage('settings',this)">
+    <span class="icon">⚙️</span>
+    SETTINGS
+  </button>
+
+</nav>
+
+
+<script>
+
+const throttle = [0,5,10,20,40,60,80,100];
+
+const rpm = [
+  1000,
+  1500,
+  2000,
+  2500,
+  3000,
+  4000,
+  5000,
+  6000
+];
+
+let veData = [];
+
+
+/* CREATE DEFAULT TABLE */
+
+function createDefaultData(){
+
+  veData = [];
+
+  for(let r=0;r<throttle.length;r++){
+
+    let row=[];
+
+    for(let c=0;c<rpm.length;c++){
+
+      let value = 85 + Math.floor(Math.random()*11);
+
+      row.push(value);
+
+    }
+
+    veData.push(row);
+
+  }
+
+}
+
+
+/* LOAD SAVED DATA */
+
+function loadTune(){
+
+  const saved = localStorage.getItem("tunerBuddyVE");
+
+  if(saved){
+
+    veData = JSON.parse(saved);
+
+  }else{
+
+    createDefaultData();
+
+  }
+
+  renderTable();
+
+}
+
+
+/* RENDER TABLE */
+
+function renderTable(){
+
+  const body = document.getElementById("tableBody");
+
+  body.innerHTML="";
+
+  throttle.forEach((thr,rowIndex)=>{
+
+    const tr=document.createElement("tr");
+
+    const label=document.createElement("td");
+
+    label.className="row-label";
+
+    label.textContent=thr+"%";
+
+    tr.appendChild(label);
+
+    rpm.forEach((rpmValue,colIndex)=>{
+
+      const td=document.createElement("td");
+
+      td.className="cell";
+
+      const value=veData[rowIndex][colIndex];
+
+      td.textContent=value;
+
+      if(thr===0){
+
+        td.classList.add("blue");
+
+      }else if(thr<=10){
+
+        td.classList.add("green");
+
+      }else if(thr<=60){
+
+        td.classList.add("orange");
+
+      }else{
+
+        td.classList.add("purple");
+
+      }
+
+      td.onclick=function(){
+
+        editCell(rowIndex,colIndex);
+
+      };
+
+      tr.appendChild(td);
+
+    });
+
+    body.appendChild(tr);
+
+  });
+
+}
+
+
+/* EDIT CELL */
+
+function editCell(row,col){
+
+  const current=veData[row][col];
+
+  const result=prompt(
+    "VE Value\n"+
+    throttle[row]+"% throttle / "+
+    rpm[col]+" RPM",
+    current
+  );
+
+  if(result===null) return;
+
+  const number=Number(result);
+
+  if(!Number.isNaN(number)){
+
+    veData[row][col]=number;
+
+    renderTable();
+
+  }
+
+}
+
+
+/* SAVE */
+
+function saveTune(){
+
+  localStorage.setItem(
+    "tunerBuddyVE",
+    JSON.stringify(veData)
+  );
+
+  alert("Tune saved on this device!");
+
+}
+
+
+/* RESET */
+
+function resetTune(){
+
+  if(confirm("Reset the entire VE table?")){
+
+    createDefaultData();
+
+    renderTable();
+
+    localStorage.removeItem("tunerBuddyVE");
+
+  }
+
+}
+
+
+/* PAGE SWITCHING */
+
+function showPage(page,button){
+
+  document.querySelectorAll(".page").forEach(p=>{
+
+    p.classList.remove("active");
+
+  });
+
+  document.getElementById(page).classList.add("active");
+
+  document.querySelectorAll(".nav-btn").forEach(b=>{
+
+    b.classList.remove("active");
+
+  });
+
+  button.classList.add("active");
+
+}
+
+
+loadTune();
+
+</script>
+
 </body>
-</html>
+    </html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TUNER.BUDDY</title>
+
+<style>
+:root{
+  --bg:#101114;
+  --panel:#1a1c21;
+  --panel2:#22252b;
+  --border:#353941;
+  --text:#f2f2f2;
+  --muted:#9ca3af;
+  --red:#ff5b5b;
+  --orange:#ffad4d;
+  --blue:#4aa8ff;
+  --green:#45c979;
+  --purple:#a95cff;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  padding-bottom:90px;
+}
+
+/* HEADER */
+
+header{
+  padding:20px 18px 14px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#101114;
+  border-bottom:1px solid var(--border);
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo h1{
+  margin:0;
+  font-size:26px;
+  letter-spacing:2px;
+  color:var(--red);
+}
+
+.status{
+  font-size:12px;
+  color:var(--green);
+  font-weight:bold;
+}
+
+/* MAIN */
+
+main{
+  padding:16px;
+  max-width:900px;
+  margin:auto;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:16px;
+}
+
+.card h2{
+  margin:0 0 8px;
+  font-size:20px;
+}
+
+.card p{
+  color:var(--muted);
+  margin:6px 0;
+  line-height:1.5;
+}
+
+.tune-info{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:14px;
+}
+
+.info-box{
+  flex:1;
+  background:var(--panel2);
+  border-radius:12px;
+  padding:12px;
+  text-align:center;
+}
+
+.info-box small{
+  display:block;
+  color:var(--muted);
+}
+
+.info-box strong{
+  display:block;
+  margin-top:5px;
+  font-size:15px;
+}
+
+/* TABLE */
+
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--border);
+  border-radius:12px;
+  max-height:520px;
+}
+
+table{
+  border-collapse:collapse;
+  min-width:700px;
+  width:100%;
+}
+
+th{
+  background:#2a2d33;
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+
+th,td{
+  border:1px solid #393d45;
+  text-align:center;
+  min-width:82px;
+  height:58px;
+}
+
+th{
+  color:#ddd;
+  font-size:14px;
+}
+
+.row-label{
+  background:#292c31;
+  font-weight:bold;
+  position:sticky;
+  left:0;
+  z-index:4;
+}
+
+.corner{
+  z-index:8;
+}
+
+.cell{
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  user-select:none;
+}
+
+.cell:active{
+  filter:brightness(1.5);
+}
+
+.blue{background:#245f91;}
+.green{background:#265d38;}
+.orange{background:#9a5b00;}
+.purple{background:#65246f;}
+
+/* BUTTONS */
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+
+button{
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  font-size:15px;
+  font-weight:bold;
+  color:white;
+  cursor:pointer;
+  flex:1;
+}
+
+.save{
+  background:var(--green);
+}
+
+.reset{
+  background:#363a42;
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+/* LOGS */
+
+.log-item{
+  background:var(--panel2);
+  border-left:4px solid var(--blue);
+  padding:12px;
+  border-radius:8px;
+  margin-top:10px;
+}
+
+.log-item strong{
+  display:block;
+}
+
+.log-item span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* SETTINGS */
+
+.setting{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.setting:last-child{
+  border:none;
+}
+
+.setting span{
+  color:var(--muted);
+}
+
+/* BOTTOM NAV */
+
+nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:74px;
+  background:#181a1f;
+  border-top:1px solid var(--border);
+  display:flex;
+  z-index:50;
+}
+
+.nav-btn{
+  flex:1;
+  background:none;
+  border-radius:0;
+  color:#858b95;
+  padding:8px;
+  font-size:12px;
+}
+
+.nav-btn .icon{
+  display:block;
+  font-size:24px;
+  margin-bottom:4px;
+}
+
+.nav-btn.active{
+  color:var(--red);
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+  .logo h1{
+    font-size:23px;
+  }
+
+  main{
+    padding:12px;
+  }
+
+  .card{
+    padding:14px;
+  }
+
+  .tune-info{
+    gap:6px;
+  }
+
+  .info-box{
+    padding:9px 5px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    <h1>TUNER.BUDDY</h1>
+    <div class="status">● ONLINE</div>
+  </div>
+</header>
+
+<main>
+
+<!-- TUNE PAGE -->
+
+<section id="tune" class="page active">
+
+  <div class="card">
+    <h2>🔥 Active Tune</h2>
+    <p>Your mobile tuning workspace.</p>
+
+    <div class="tune-info">
+
+      <div class="info-box">
+        <small>TABLE</small>
+        <strong>VE MAP</strong>
+      </div>
+
+      <div class="info-box">
+        <small>CELLS</small>
+        <strong id="cellCount">72</strong>
+      </div>
+
+      <div class="info-box">
+        <small>STATUS</small>
+        <strong>SAVED</strong>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+
+    <h2>🗺️ VE MAP</h2>
+
+    <p>Tap any cell to change its value.</p>
+
+    <div class="table-wrap">
+
+      <table id="veTable">
+
+        <thead>
+          <tr>
+            <th class="corner">THR ↓ / RPM →</th>
+            <th>1000</th>
+            <th>1500</th>
+            <th>2000</th>
+            <th>2500</th>
+            <th>3000</th>
+            <th>4000</th>
+            <th>5000</th>
+            <th>6000</th>
+          </tr>
+        </thead>
+
+        <tbody id="tableBody"></tbody>
+
+      </table>
+
+    </div>
+
+    <div class="actions">
+
+      <button class="save" onclick="saveTune()">
+        💾 SAVE TUNE
+      </button>
+
+      <button class="reset" onclick="resetTune()">
+        ↺ RESET
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- LOGS PAGE -->
+
+<section id="logs" class="page">
+
+  <div class="card">
+
+    <h2>📊 DATALOGS</h2>
+
+    <p>Logs will eventually show your RPM, AFR, boost and other engine data here.</p>
+
+    <div class="log-item">
+      <strong>No logs loaded</strong>
+      <span>Connect logging support in a future update.</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SPARK PAGE -->
+
+<section id="spark" class="page">
+
+  <div class="card">
+
+    <h2>⚡ SPARK TUNING</h2>
+
+    <p>This section will hold ignition timing maps.</p>
+
+    <div class="log-item">
+      <strong>Spark Table</strong>
+      <span>Coming next.</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SETTINGS PAGE -->
+
+<section id="settings" class="page">
+
+  <div class="card">
+
+    <h2>⚙️ SETTINGS</h2>
+
+    <div class="setting">
+      <strong>Theme</strong>
+      <span>Dark</span>
+    </div>
+
+    <div class="setting">
+      <strong>Local Storage</strong>
+      <span>Enabled</span>
+    </div>
+
+    <div class="setting">
+      <strong>Version</strong>
+      <span>V2.0</span>
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- BOTTOM NAV -->
+
+<nav>
+
+  <button class="nav-btn active" onclick="showPage('tune',this)">
+    <span class="icon">🗺️</span>
+    TUNE
+  </button>
+
+  <button class="nav-btn" onclick="showPage('logs',this)">
+    <span class="icon">📊</span>
+    LOGS
+  </button>
+
+  <button class="nav-btn" onclick="showPage('spark',this)">
+    <span class="icon">⚡</span>
+    SPARK
+  </button>
+
+  <button class="nav-btn" onclick="showPage('settings',this)">
+    <span class="icon">⚙️</span>
+    SETTINGS
+  </button>
+
+</nav>
+
+
+<script>
+
+const throttle = [0,5,10,20,40,60,80,100];
+
+const rpm = [
+  1000,
+  1500,
+  2000,
+  2500,
+  3000,
+  4000,
+  5000,
+  6000
+];
+
+let veData = [];
+
+
+/* CREATE DEFAULT TABLE */
+
+function createDefaultData(){
+
+  veData = [];
+
+  for(let r=0;r<throttle.length;r++){
+
+    let row=[];
+
+    for(let c=0;c<rpm.length;c++){
+
+      let value = 85 + Math.floor(Math.random()*11);
+
+      row.push(value);
+
+    }
+
+    veData.push(row);
+
+  }
+
+}
+
+
+/* LOAD SAVED DATA */
+
+function loadTune(){
+
+  const saved = localStorage.getItem("tunerBuddyVE");
+
+  if(saved){
+
+    veData = JSON.parse(saved);
+
+  }else{
+
+    createDefaultData();
+
+  }
+
+  renderTable();
+
+}
+
+
+/* RENDER TABLE */
+
+function renderTable(){
+
+  const body = document.getElementById("tableBody");
+
+  body.innerHTML="";
+
+  throttle.forEach((thr,rowIndex)=>{
+
+    const tr=document.createElement("tr");
+
+    const label=document.createElement("td");
+
+    label.className="row-label";
+
+    label.textContent=thr+"%";
+
+    tr.appendChild(label);
+
+    rpm.forEach((rpmValue,colIndex)=>{
+
+      const td=document.createElement("td");
+
+      td.className="cell";
+
+      const value=veData[rowIndex][colIndex];
+
+      td.textContent=value;
+
+      if(thr===0){
+
+        td.classList.add("blue");
+
+      }else if(thr<=10){
+
+        td.classList.add("green");
+
+      }else if(thr<=60){
+
+        td.classList.add("orange");
+
+      }else{
+
+        td.classList.add("purple");
+
+      }
+
+      td.onclick=function(){
+
+        editCell(rowIndex,colIndex);
+
+      };
+
+      tr.appendChild(td);
+
+    });
+
+    body.appendChild(tr);
+
+  });
+
+}
+
+
+/* EDIT CELL */
+
+function editCell(row,col){
+
+  const current=veData[row][col];
+
+  const result=prompt(
+    "VE Value\n"+
+    throttle[row]+"% throttle / "+
+    rpm[col]+" RPM",
+    current
+  );
+
+  if(result===null) return;
+
+  const number=Number(result);
+
+  if(!Number.isNaN(number)){
+
+    veData[row][col]=number;
+
+    renderTable();
+
+  }
+
+}
+
+
+/* SAVE */
+
+function saveTune(){
+
+  localStorage.setItem(
+    "tunerBuddyVE",
+    JSON.stringify(veData)
+  );
+
+  alert("Tune saved on this device!");
+
+}
+
+
+/* RESET */
+
+function resetTune(){
+
+  if(confirm("Reset the entire VE table?")){
+
+    createDefaultData();
+
+    renderTable();
+
+    localStorage.removeItem("tunerBuddyVE");
+
+  }
+
+}
+
+
+/* PAGE SWITCHING */
+
+function showPage(page,button){
+
+  document.querySelectorAll(".page").forEach(p=>{
+
+    p.classList.remove("active");
+
+  });
+
+  document.getElementById(page).classList.add("active");
+
+  document.querySelectorAll(".nav-btn").forEach(b=>{
+
+    b.classList.remove("active");
+
+  });
+
+  button.classList.add("active");
+
+}
+
+
+loadTune();
+
+</script>
+
+</body>
+    </html>
